@@ -9,14 +9,10 @@ import com.planilha.model.UploadRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 @Service
@@ -56,11 +52,30 @@ public class PlanilhaService {
         return dates;
     }
 
-    private XSSFWorkbook fillWorkbook(XSSFWorkbook workbook) {
-        return null;
+    private XSSFWorkbook fillWorkbook(XSSFSheet sheet, List<RowVO> rows) {
+
+        rows.forEach(rowVO -> {
+            XSSFRow row = sheet.getRow(rowVO.getIndex());
+
+            row.getCell(1).setCellValue(rowVO.getBegin());
+            row.getCell(2).setCellValue(rowVO.getBeginLunch());
+            row.getCell(3).setCellValue(rowVO.getEndLunch());
+            row.getCell(4).setCellValue(rowVO.getEnd());
+
+            if (rowVO.getBeginExtra() != null && rowVO.getEndExtra() != null) {
+                row.getCell(5).setCellValue(rowVO.getBeginExtra());
+                row.getCell(6).setCellValue(rowVO.getEndExtra());
+            }
+
+        });
+
+
+        return sheet.getWorkbook();
     }
 
-    public void processWorkbook(UploadRequest request) throws IOException {
+    public byte[] processWorkbook(UploadRequest request) throws IOException {
+        log.info("started processing workbook");
+
         XSSFWorkbook workbook = readInputStream(request.getFile().getInputStream());
         XSSFSheet sheet = workbook.getSheetAt(request.getMonth());
 
@@ -69,11 +84,25 @@ public class PlanilhaService {
         AccwebConnector connector = new AccwebConnector();
         connector.authenticate(request.getUser(), request.getPassword());
 
+        log.info("fetching accweb data...");
         List<RowVO> rows = new ArrayList<>();
-
         dates.forEach((index, date) -> {
             rows.add(RowMapper.map(connector.fetch(date), index));
         });
+        log.info("finished fetching accweb data!!!");
+        rows.removeIf(Objects::isNull); // remove null objects
+
+        // fill and writing workbook
+        workbook = fillWorkbook(sheet, rows);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        try {
+            workbook.write(byteArrayOutputStream);
+        } finally {
+            byteArrayOutputStream.close();
+        }
+
+        return byteArrayOutputStream.toByteArray();
     }
 
 
