@@ -24,7 +24,7 @@ public class UploadController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResponseEntity upload(@Valid UploadRequest request) throws IOException {
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=" + request.getFile().getName())
+                .header("Content-Disposition", "attachment; filename=planilha.xlsx")
                 .contentType(MediaType.valueOf("application/vnd.ms-excel"))
                 .body(planilhaService.processWorkbook(request));
     }
