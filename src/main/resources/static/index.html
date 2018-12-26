@@ -3,33 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Planilha Spring</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
-<h1>2.0</h1>
-<form action="/api/v1/upload" method="POST" enctype="multipart/form-data">
-    <select name="month">
-        <option value="0">Janeiro</option>
-        <option value="1">Fevereiro</option>
-        <option value="2">Março</option>
-        <option value="3">Abril</option>
-        <option value="4">Maio</option>
-        <option value="5">Junho</option>
-        <option value="6">Julho</option>
-        <option value="7">Agosto</option>
-        <option value="8">Setembro</option>
-        <option value="9">Outubro</option>
-        <option value="10">Novembro</option>
-        <option value="11">Dezembro</option>
-    </select> <br/> <br/>
 
-    <label for="user">Usuário</label>
-    <input type="text" name="user" id="user"/> <br/><br/>
+<div class="header">
 
-    <label for="password">Senha</label>
-    <input type="password" name="password" id="password"/> <br/><br/>
+</div>
+<div class="content">
 
-    <input type="file" name="file"> <br/> <br/>
-    <input type="submit" name="submit"> <br/> <br/>
-</form>
+    <form action="/api/v1/upload" method="POST" enctype="multipart/form-data">
+        <select name="month">
+            <option value="0">Janeiro</option>
+            <option value="1">Fevereiro</option>
+            <option value="2">Março</option>
+            <option value="3">Abril</option>
+            <option value="4">Maio</option>
+            <option value="5">Junho</option>
+            <option value="6">Julho</option>
+            <option value="7">Agosto</option>
+            <option value="8">Setembro</option>
+            <option value="9">Outubro</option>
+            <option value="10">Novembro</option>
+            <option value="11">Dezembro</option>
+        </select> <br/> <br/>
+
+        <label for="user">Usuário</label>
+        <input type="text" name="user" id="user"/> <br/><br/>
+
+        <label for="password">Senha</label>
+        <input type="password" name="password" id="password"/> <br/><br/>
+
+        <input type="file" name="file"> <br/> <br/>
+        <input type="submit" name="submit"> <br/> <br/>
+    </form>
+</div>
+
+
 </body>
 </html>
